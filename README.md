@@ -1,1 +1,1 @@
-# django_sputnik_map
+# django-sputnik-map
