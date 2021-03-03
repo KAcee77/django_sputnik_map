@@ -11,5 +11,3 @@ class SampleModel(models.Model):
     lon = models.FloatField()
     address = AddressField(max_length=200)
     
-
-    
