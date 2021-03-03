@@ -1,0 +1,8 @@
+.ui-menu{
+    z-index: 999999;
+    position:absolute;
+}
+
+#osm-map{
+    height: 400px;
+}

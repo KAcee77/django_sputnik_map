@@ -1,0 +1,62 @@
+{% include "django/forms/widgets/text.html" %}
+<button type="button" id="id_search_button">search</button>
+<div id="osm-map"></div>
+{% block javascript %}
+<script>
+    // Where you want to render the map.
+    let element = document.getElementById('osm-map');
+
+    // Create Leaflet map on map element. 
+    let map = L.map(element);
+
+    // Add OSM tile leayer to the Leaflet map.
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    let target;
+
+    if ($('#id_lat').val() === ''){
+        target = L.latLng('55.75033', '37.61766');
+    } else {
+        target = L.latLng($('#id_lat').val(), $('#id_lon').val());
+    }
+    // Set map's center to target with zoom 15.
+    map.setView(target, 15);
+
+    // Place a marker on the same location.
+    let mainMarker = new L.marker(target, { draggable: true });
+    mainMarker.addTo(map);
+
+    function printMarkerCoordinates() {
+        document.getElementById('id_lat').value = mainMarker.getLatLng().lat.toFixed(5);
+        document.getElementById('id_lon').value = mainMarker.getLatLng().lng.toFixed(5);
+    }
+
+    printMarkerCoordinates();
+
+    mainMarker.on('dragend', function () {
+        printMarkerCoordinates();
+    });
+
+    $(document).ready(function () {
+        $('#id_address').keyup(async function () {
+            $('#id_address').autocomplete({
+                source: async function (request, response) {
+                    response(await getListAddress(request.term));
+                },
+            });
+        });
+        $('#id_search_button').click(async function () {
+            let address = $('#id_address').val();
+            if (address) {
+                let coordinates = await mappingAddress(address);
+                let target = L.latLng(coordinates[1], coordinates[0]);
+                map.setView(target, 17);
+                mainMarker.setLatLng(target);
+                printMarkerCoordinates();
+            }
+        });
+    });
+</script>
+{% endblock javascript %}
