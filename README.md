@@ -1,5 +1,4 @@
 # DJANGO-SPUTNIK-MAPS
----
 ## USAGE:
 * include the ``django_sputnik_maps`` app in your settings.py
 * create a model where the field names match the example 
